@@ -92,9 +92,10 @@ Parameters:
     Type: AWS::EC2::KeyPair::KeyName
   BastionInstanceType:
     Type: String
-    Default: t3.medium
+    Default: m5.xlarge
     Description : Instance type for a bastion host.
     AllowedValues:
+      - m5.xlarge
       - t2.small
       - t2.medium
       - t2.large
@@ -103,7 +104,7 @@ Parameters:
       - t3.large
   LatestAmiId:
     Type: 'AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>'
-    Default: '/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2'
+    Default: '/aws/service/ami-amazon-linux-latest/al2023-ami-kernel-default-x86_64'
 
 Resources:
   MyVpc:
@@ -373,7 +374,7 @@ Resources:
       ImageId: !Ref LatestAmiId
       Tags:
         - Key: Name
-          Value: !Sub "MyBastionHost-${AWS::StackName}"
+          Value: !Sub "bastion-${AWS::StackName}"
 
   ## EKS cluster ##
   EksIamRole:
