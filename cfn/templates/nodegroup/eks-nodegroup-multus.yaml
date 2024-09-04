@@ -93,7 +93,7 @@ Parameters:
 
   NodeAutoScalingGroupMaxSize:
     Type: Number
-    Default: 3
+    Default: 6
     Description: Maximum size of Node Group ASG. Set to at least 1 greater than NodeAutoScalingGroupDesiredCapacity.
 
   NodeAutoScalingGroupMinSize:
@@ -385,7 +385,7 @@ Parameters:
 
   NodeVolumeSize:
     Type: Number
-    Default: 50
+    Default: 200
     Description: Node volume size
 
   Subnets:
@@ -585,6 +585,7 @@ Resources:
             ACTION=="add", SUBSYSTEM=="net", KERNELS=="0000:00:09.0", NAME:="eth4"
             ACTION=="add", SUBSYSTEM=="net", KERNELS=="0000:00:0a.0", NAME:="eth5"
             ACTION=="add", SUBSYSTEM=="net", KERNELS=="0000:00:0b.0", NAME:="eth6"
+            ACTION=="add", SUBSYSTEM=="net", KERNELS=="0000:00:0c.0", NAME:="eth7"
             EOL
             # Adjust kernel parameters
             echo "net.ipv4.conf.default.rp_filter = 0" | tee -a /etc/sysctl.conf

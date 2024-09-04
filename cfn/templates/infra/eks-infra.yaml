@@ -21,6 +21,8 @@ Metadata:
           - MultusSubnet1Az2Cidr
           - MultusSubnet2Az1Cidr
           - MultusSubnet2Az2Cidr
+          - MultusSubnet3Az1Cidr
+          - MultusSubnet3Az2Cidr
       - Label:
           default: Bastion Configuration
         Parameters:
@@ -84,6 +86,18 @@ Parameters:
     AllowedPattern: ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/(1[6-9]|2[0-8]))$
     ConstraintDescription: CIDR block parameter must be in the form x.x.x.x/16–28
     Default: 10.0.7.0/24
+    Description: CIDR block for the Private Subnet in AZ2. This will be used for User Plane.
+    Type: String
+  MultusSubnet3Az1Cidr:
+    AllowedPattern: ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/(1[6-9]|2[0-8]))$
+    ConstraintDescription: CIDR block parameter must be in the form x.x.x.x/16–28
+    Default: 10.0.8.0/24
+    Description: CIDR block for the Private Subnet in AZ1. This will be used for User Plane.
+    Type: String
+  MultusSubnet3Az2Cidr:
+    AllowedPattern: ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/(1[6-9]|2[0-8]))$
+    ConstraintDescription: CIDR block parameter must be in the form x.x.x.x/16–28
+    Default: 10.0.9.0/24
     Description: CIDR block for the Private Subnet in AZ2. This will be used for User Plane.
     Type: String
   BastionKeyPairName:
@@ -288,6 +302,15 @@ Resources:
       Tags:
         - Key: Name
           Value: !Sub "multus2Az1-${AWS::StackName}"
+  MultusSubnet3Az1:
+    Type: 'AWS::EC2::Subnet'
+    Properties:
+      VpcId: !Ref MyVpc
+      CidrBlock: !Ref MultusSubnet3Az1Cidr
+      AvailabilityZone: !Select ['0', !Ref AvailabilityZones]
+      Tags:
+        - Key: Name
+          Value: !Sub "multus3Az1-${AWS::StackName}"
   MultusSubnet1Az2:
     Type: 'AWS::EC2::Subnet'
     Properties:
@@ -306,6 +329,15 @@ Resources:
       Tags:
         - Key: Name
           Value: !Sub "multus2Az2-${AWS::StackName}"
+  MultusSubnet3Az2:
+    Type: 'AWS::EC2::Subnet'
+    Properties:
+      VpcId: !Ref MyVpc
+      CidrBlock: !Ref MultusSubnet3Az2Cidr
+      AvailabilityZone: !Select ['1', !Ref AvailabilityZones]
+      Tags:
+        - Key: Name
+          Value: !Sub "multus3Az2-${AWS::StackName}"
 
   MultusSecurityGroup:
     Type: AWS::EC2::SecurityGroup
@@ -555,6 +587,11 @@ Outputs:
     Value: !Ref MultusSubnet2Az1
     Export:
       Name: !Sub "${AWS::StackName}-MultusSubnet2Az1"
+  MultusSubnet3Az1:
+    Description: EKS WorkerNode MultusSubnet3Az1 at AZ1. This will be used for Multus interface (user-plane).
+    Value: !Ref MultusSubnet3Az1
+    Export:
+      Name: !Sub "${AWS::StackName}-MultusSubnet3Az1"
   MultusSubnet1Az2:
     Description: EKS WorkerNode MultusSubnet1Az2 at AZ2. This will be used for Multus interface (control-plane).
     Value: !Ref MultusSubnet1Az2
@@ -565,6 +602,11 @@ Outputs:
     Value: !Ref MultusSubnet2Az2
     Export:
       Name: !Sub "${AWS::StackName}-MultusSubnet2Az2"
+  MultusSubnet3Az2:
+    Description: EKS WorkerNode MultusSubnet3Az2 at AZ2. This will be used for Multus interface (user-plane).
+    Value: !Ref MultusSubnet3Az2
+    Export:
+      Name: !Sub "${AWS::StackName}-MultusSubnet3Az2"
   MultusSecurityGroup:
     Description: EKS WorkerNode SecurityGroup for Multus Subnets.
     Value: !Ref MultusSecurityGroup
