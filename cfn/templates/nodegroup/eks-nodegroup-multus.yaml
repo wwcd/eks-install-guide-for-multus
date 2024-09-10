@@ -68,7 +68,7 @@ Parameters:
 
   BootstrapArguments:
     Type: String
-    Default: "--kubelet-extra-args '--allowed-unsafe-sysctls=net.unix.max_dgram_qlen,net.core.somaxconn --cpu-manager-policy=static --reserved-cpus=0,1,24,25'"
+    Default: "--kubelet-extra-args '--allowed-unsafe-sysctls=net.unix.max_dgram_qlen,net.core.somaxconn --cpu-manager-policy=static --reserved-cpus=0,48,24,72'"
     Description: "Arguments to pass to the bootstrap script. See files/bootstrap.sh in https://github.com/awslabs/amazon-eks-ami"
     AllowedPattern : ".+"
 
@@ -124,7 +124,7 @@ Parameters:
 
   NodeInstanceType:
     Type: String
-    Default: m5.12xlarge
+    Default: m5.24xlarge
     AllowedValues:
       - a1.medium
       - a1.large
@@ -593,7 +593,7 @@ Resources:
             echo "net.core.wmem_max = 212992000" | tee -a /etc/sysctl.conf
             echo "net.core.rmem_max = 212992000" | tee -a /etc/sysctl.conf
             echo "vm.overcommit_memory = 1" | tee -a /etc/sysctl.conf
-            echo "vm.nr_hugepages = 20" | tee -a /etc/sysctl.conf
+            echo "vm.nr_hugepages = 140" | tee -a /etc/sysctl.conf
             sudo sysctl -p
             # Up all nic
             sleep 5s
